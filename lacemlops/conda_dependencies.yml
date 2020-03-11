@@ -22,6 +22,7 @@ dependencies:
   # Required by azureml-defaults, installed separately through Conda to
   # get a prebuilt version and not require build tools for the install.
   - psutil=5.6 #latest
+  - lightgbm
 
   - pip:
       # Required packages for AzureML execution, history, and data preparation.
@@ -38,4 +39,3 @@ dependencies:
       - azure
       - azure-storage-blob
       - azureml-dataprep
-      - lightgbm
