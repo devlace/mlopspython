@@ -89,7 +89,7 @@ def main():
     print("Loading model from " + model_path)
     model_file = os.path.join(model_path, model_name)
     model = joblib.load(model_file)
-    model_mse = run.parent.get_metrics()["mse"]
+    model_auc = run.parent.get_metrics()["auc"]
     parent_tags = run.parent.get_tags()
     try:
         build_id = parent_tags["BuildId"]
@@ -110,7 +110,7 @@ def main():
             register_aml_model(
                 model_file,
                 model_name,
-                model_mse,
+                model_auc,
                 exp,
                 run_id,
                 dataset_id)
@@ -118,7 +118,7 @@ def main():
             register_aml_model(
                 model_file,
                 model_name,
-                model_mse,
+                model_auc,
                 exp,
                 run_id,
                 dataset_id,
@@ -127,7 +127,7 @@ def main():
             register_aml_model(
                 model_file,
                 model_name,
-                model_mse,
+                model_auc,
                 exp,
                 run_id,
                 dataset_id,
@@ -152,7 +152,7 @@ def model_already_registered(model_name, exp, run_id):
 def register_aml_model(
     model_path,
     model_name,
-    model_mse,
+    model_auc,
     exp,
     run_id,
     dataset_id,
@@ -163,7 +163,7 @@ def register_aml_model(
         tagsValue = {"area": "lacemlops",
                      "run_id": run_id,
                      "experiment_name": exp.name,
-                     "mse": model_mse}
+                     "auc": model_auc}
         if (build_id != 'none'):
             model_already_registered(model_name, exp, run_id)
             tagsValue["BuildId"] = build_id
