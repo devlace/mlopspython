@@ -21,7 +21,8 @@
         "westcentralus",
         "westeurope",
         "westus2",
-        "centralus"
+        "centralus",
+        "australiaeast"
       ],
       "metadata": {
         "description": "Specifies the location for all resources."
