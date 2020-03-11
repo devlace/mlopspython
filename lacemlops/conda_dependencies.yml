@@ -38,3 +38,4 @@ dependencies:
       - azure
       - azure-storage-blob
       - azureml-dataprep
+      - lightgbm
