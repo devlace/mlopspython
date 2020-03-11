@@ -35,7 +35,7 @@ def get_model_metrics(model, data):
     """Construct a dictionary of metrics for the model"""
     validation_data = data[1]
     predictions = model.predict(validation_data.data)
-    fpr, tpr, thresholds = metrics.roc_curve(validation_data.label, predictions)
+    fpr, tpr, thresholds = metrics.roc_curve(validation_data.label, predictions)  # noqa: E501
     model_metrics = {"auc": (metrics.auc(fpr, tpr))}
     return model_metrics
 
