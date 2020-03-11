@@ -5,7 +5,7 @@ steps:
   displayName: 'Run lint tests'
 
 - script: |   
-   python -m pytest . --cov=lacemlops --cov-report=html --cov-report=xml --junitxml=unit-testresults.xml
+   python -m pytest . --cov=lacemlops --cov-report=html --cov-report=xml --junitxml=unit-testresults.xml --ignore=E501,E303,E127,E305
   condition: succeededOrFailed()
   displayName: 'Run unit tests'
 
