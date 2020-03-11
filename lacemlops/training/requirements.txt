@@ -1,0 +1,5 @@
+numpy
+pandas
+lightgbm
+scikit-learn
+azureml-sdk
