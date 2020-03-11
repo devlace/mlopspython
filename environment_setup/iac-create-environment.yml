@@ -2,7 +2,7 @@ pr: none
 trigger: none
 
 variables:
-- group: devopsforai-aml-vg
+- group: lace-var-group-01
 
 stages:
 - stage: 'Dev'
