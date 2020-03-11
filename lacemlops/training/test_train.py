@@ -1,5 +1,5 @@
 import numpy as np
-from diabetes_regression.training.train import train_model, get_model_metrics
+from lacemlops.training.train import train_model, get_model_metrics
 
 
 def test_train_model():

@@ -160,7 +160,7 @@ def register_aml_model(
     build_uri=None
 ):
     try:
-        tagsValue = {"area": "diabetes_regression",
+        tagsValue = {"area": "lacemlops",
                      "run_id": run_id,
                      "experiment_name": exp.name,
                      "mse": model_mse}

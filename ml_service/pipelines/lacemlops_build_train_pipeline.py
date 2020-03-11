@@ -6,7 +6,7 @@ from azureml.core.runconfig import RunConfiguration
 from ml_service.util.attach_compute import get_compute
 from ml_service.util.env_variables import Env
 from ml_service.util.manage_environment import get_environment
-from sklearn.datasets import load_diabetes
+from sklearn.datasets import load_lacemlops
 import pandas as pd
 import os
 
@@ -58,13 +58,13 @@ def main():
 
     # Check to see if dataset exists
     if (dataset_name not in aml_workspace.datasets):
-        # Create dataset from diabetes sample data
-        sample_data = load_diabetes()
+        # Create dataset from lacemlops sample data
+        sample_data = load_lacemlops()
         df = pd.DataFrame(
             data=sample_data.data,
             columns=sample_data.feature_names)
         df['Y'] = sample_data.target
-        file_name = 'diabetes.csv'
+        file_name = 'lacemlops.csv'
         df.to_csv(file_name, index=False)
 
         # Upload file to default datastore in workspace
@@ -83,7 +83,7 @@ def main():
         dataset = dataset.register(
             workspace=aml_workspace,
             name=dataset_name,
-            description='diabetes training data',
+            description='lacemlops training data',
             tags={'format': 'CSV'},
             create_new_version=True)
 

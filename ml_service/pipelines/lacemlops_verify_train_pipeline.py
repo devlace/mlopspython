@@ -3,7 +3,7 @@ import sys
 import os
 from azureml.core import Run, Experiment, Workspace
 from ml_service.util.env_variables import Env
-from diabetes_regression.util.model_helper import get_model_by_tag
+from lacemlops.util.model_helper import get_model_by_tag
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
         load_dotenv()
         sources_dir = os.environ.get("SOURCES_DIR_TRAIN")
         if (sources_dir is None):
-            sources_dir = 'diabetes_regression'
+            sources_dir = 'lacemlops'
         workspace_name = os.environ.get("WORKSPACE_NAME")
         experiment_name = os.environ.get("EXPERIMENT_NAME")
         resource_group = os.environ.get("RESOURCE_GROUP")

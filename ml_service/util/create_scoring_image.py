@@ -27,7 +27,7 @@ args = parser.parse_args()
 model = Model(ws, name=e.model_name, version=e.model_version)
 sources_dir = e.sources_directory_train
 if (sources_dir is None):
-    sources_dir = 'diabetes_regression'
+    sources_dir = 'lacemlops'
 score_script = os.path.join(".", sources_dir, e.score_script)
 score_file = os.path.basename(score_script)
 path_to_scoring = os.path.dirname(score_script)
@@ -41,7 +41,7 @@ image_config = ContainerImage.image_configuration(
     runtime="python",
     conda_file="conda_dependencies.yml",
     description="Image with ridge regression model",
-    tags={"area": "diabetes_regression"},
+    tags={"area": "lacemlops"},
 )
 
 image = Image.create(

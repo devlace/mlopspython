@@ -34,7 +34,7 @@ run = Run.get_context()
 # the following code is a good starting point for you
 # use
 # python -m evaluate.evaluate_model
-# in diabetes_regression folder context
+# in lacemlops folder context
 
 # if (run.id.startswith('OfflineRun')):
 #     from dotenv import load_dotenv
@@ -42,7 +42,7 @@ run = Run.get_context()
 #     load_dotenv()
 #     sources_dir = os.environ.get("SOURCES_DIR_TRAIN")
 #     if (sources_dir is None):
-#         sources_dir = 'diabetes_regression'
+#         sources_dir = 'lacemlops'
 #     path_to_util = os.path.join(".", sources_dir, "util")
 #     sys.path.append(os.path.abspath(path_to_util))  # NOQA: E402
 #     from model_helper import get_model_by_tag
