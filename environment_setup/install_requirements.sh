@@ -26,6 +26,6 @@
 
 set -eux
 
-conda env create -f lacemlops/ci_dependencies.yml
+conda env create -f safedriver/ci_dependencies.yml
 
 conda activate mlopspython_ci
