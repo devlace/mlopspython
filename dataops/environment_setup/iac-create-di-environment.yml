@@ -2,7 +2,7 @@ pr: none
 trigger: none
 
 variables:
-- group: devopsforai-aml-vg
+- group: lace-var-group-01
 
 stages:
 - stage: 'Dev'
@@ -21,7 +21,7 @@ stages:
         resourceGroupName: '$(RESOURCE_GROUP)'
         location: $(LOCATION)
         templateLocation: 'Linked artifact'
-        csmFile: '$(Build.SourcesDirectory)/environment_setup/arm-templates/cloud-di-environment.json'
+        csmFile: '$(Build.SourcesDirectory)/dataops/environment_setup/arm-templates/cloud-di-environment.json'
         overrideParameters: '-location $(LOCATION) -dbWorkspace $(DATABRICKS_WS_NAME)'
         deploymentMode: 'Incremental'
       displayName: 'Deploy OH resources to Azure'
@@ -29,7 +29,7 @@ stages:
       displayName: 'Create ADF Workspace'
       inputs:
         azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
-        ScriptPath: '$(Build.SourcesDirectory)/adf/utils/New-DataFactory.ps1'
+        ScriptPath: '$(Build.SourcesDirectory)/dataops/adf/utils/New-DataFactory.ps1'
         ScriptArguments: '-ResourceGroupName $(RESOURCE_GROUP) -DataFactoryName $(DATA_FACTORY_NAME) -Location $(LOCATION)'
         azurePowerShellVersion: LatestVersion
     - task: AzureCLI@1
