@@ -29,12 +29,12 @@ stages:
 
     - bash: |
         python -m pip install --upgrade pip 
-        python -m pip install -r $(Build.SourcesDirectory)/environment_setup/dbricks_requirements.txt
+        python -m pip install -r $(Build.SourcesDirectory)/dataops/environment_setup/dbricks_requirements.txt
       displayName: 'Install Packages'
 
     - bash: |
         #Create Azure Databricks cluster
-        DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/environment_setup/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
+        DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/dataops/environment_setup/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
         echo "##vso[task.setvariable variable=databricks_cluster_id]$DATABRICKS_CLUSTER_ID"  
       env:
         DATABRICKS_ACCESS_TOKEN: $(DATABRICKS_ACCESS_TOKEN)
