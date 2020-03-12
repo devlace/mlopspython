@@ -1,0 +1,84 @@
+pr: none
+trigger: none
+
+variables:
+- group: devopsforai-aml-vg
+- name: INPUT_CONTAINER_NAME
+  value: 'inputdata'
+- name: TRAINING_CONTAINER_NAME
+  value: 'trainingdata'
+- name: TESTING_CONTAINER_NAME
+  value: 'testingdata'
+- name: MNT_PREFIX
+  value: '/mnt/'
+- name: STORAGE_ACCOUNT_POSTFIX
+  value: 'amlsa'
+
+stages:
+- stage: 'Prepare_Pipelines'
+  displayName: 'Prepare Pipelines'
+  jobs:
+  - job: "Deploy_to_databricks"
+    displayName: "Deploy to DataBricks"
+    timeoutInMinutes: 0
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      displayName: 'Use Python 3.x'
+
+    - bash: |
+        python -m pip install --upgrade pip 
+        python -m pip install -r $(Build.SourcesDirectory)/environment_setup/dbricks_requirements.txt
+      displayName: 'Install Packages'
+
+    - bash: |
+        #Create Azure Databricks cluster
+        DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/environment_setup/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
+        echo "##vso[task.setvariable variable=databricks_cluster_id]$DATABRICKS_CLUSTER_ID"  
+      env:
+        DATABRICKS_ACCESS_TOKEN: $(DATABRICKS_ACCESS_TOKEN)
+      failOnStderr: 'true'
+      displayName: 'Initialize Databricks Cluster'
+
+    - task: configuredatabricks@0
+      inputs:
+        url: 'https://$(LOCATION).azuredatabricks.net'
+        token: '$(DATABRICKS_ACCESS_TOKEN)'
+      displayName: 'Configure Databricks CLI'    
+
+    - task: deploynotebooks@0
+      inputs:
+        notebooksFolderPath: '$(Build.SourcesDirectory)/adf/utils/notebooks'
+        workspaceFolder: '/Shared/devops-ds'
+      displayName: 'Deploy (copy) mount containers notebook to the Databricks cluster'
+
+    - task: executenotebook@0
+      inputs:
+        notebookPath: '/Shared/devops-ds/mount-data-containers'
+        existingClusterId: '$(DATABRICKS_CLUSTER_ID)'
+        executionParams: '{"storage_account_name":"$(BASE_NAME)$(STORAGE_ACCOUNT_POSTFIX)", "storage_account_key":"$(STORAGE_ACCOUNT_KEY)",
+                          "input_container_name":"$(INPUT_CONTAINER_NAME)", "input_mount_point_name":"$(MNT_PREFIX)$(INPUT_CONTAINER_NAME)",
+                          "training_container_name":"$(TRAINING_CONTAINER_NAME)", "training_mount_point_name":"$(MNT_PREFIX)$(TRAINING_CONTAINER_NAME)",
+                          "testing_container_name":"$(TESTING_CONTAINER_NAME)", "testing_mount_point_name":"$(MNT_PREFIX)$(TESTING_CONTAINER_NAME)"}'
+      displayName: 'Mount containers'
+
+
+    - task: waitexecution@0
+      displayName: 'Wait until the mounting is done'
+
+  - job: "Deploy_to_adfs"
+    displayName: "Deploy to ADFS"
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 0
+    steps:
+    - task: AzureResourceGroupDeployment@2
+      displayName: 'Deploy ADF resources'
+      inputs:
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
+        resourceGroupName: $(RESOURCE_GROUP)
+        location: $(LOCATION)
+        csmFile: '$(Build.SourcesDirectory)/adf/arm-template/arm_template.json'
+        csmParametersFile: '$(Build.SourcesDirectory)/adf/arm-template/arm_template_parameters.json'
+        overrideParameters: -factoryName "$(DATA_FACTORY_NAME)"

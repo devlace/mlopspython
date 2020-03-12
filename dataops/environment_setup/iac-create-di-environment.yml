@@ -1,0 +1,44 @@
+pr: none
+trigger: none
+
+variables:
+- group: devopsforai-aml-vg
+
+stages:
+- stage: 'Dev'
+  displayName: 'Dev'
+  jobs:
+  - job: "Provision_Dev"
+    displayName: "Provision Dev resources"
+    pool:
+      vmImage: 'ubuntu-latest'
+    timeoutInMinutes: 0
+    steps:
+    - task: AzureResourceGroupDeployment@2
+      inputs:
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
+        action: 'Create Or Update Resource Group'
+        resourceGroupName: '$(RESOURCE_GROUP)'
+        location: $(LOCATION)
+        templateLocation: 'Linked artifact'
+        csmFile: '$(Build.SourcesDirectory)/environment_setup/arm-templates/cloud-di-environment.json'
+        overrideParameters: '-location $(LOCATION) -dbWorkspace $(DATABRICKS_WS_NAME)'
+        deploymentMode: 'Incremental'
+      displayName: 'Deploy OH resources to Azure'
+    - task: AzurePowerShell@4
+      displayName: 'Create ADF Workspace'
+      inputs:
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
+        ScriptPath: '$(Build.SourcesDirectory)/adf/utils/New-DataFactory.ps1'
+        ScriptArguments: '-ResourceGroupName $(RESOURCE_GROUP) -DataFactoryName $(DATA_FACTORY_NAME) -Location $(LOCATION)'
+        azurePowerShellVersion: LatestVersion
+    - task: AzureCLI@1
+      displayName: 'Register EventGrid'
+      inputs:
+        azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
+        scriptLocation: inlineScript
+        inlineScript: |
+          az provider register --namespace Microsoft.EventGrid
+
+
+  
