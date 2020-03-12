@@ -2,7 +2,7 @@ pr: none
 trigger: none
 
 variables:
-- group: devopsforai-aml-vg
+- group: lace-var-group-01
 - name: INPUT_CONTAINER_NAME
   value: 'inputdata'
 - name: TRAINING_CONTAINER_NAME
@@ -49,7 +49,7 @@ stages:
 
     - task: deploynotebooks@0
       inputs:
-        notebooksFolderPath: '$(Build.SourcesDirectory)/adf/utils/notebooks'
+        notebooksFolderPath: '$(Build.SourcesDirectory)/dataops/adf/utils/notebooks'
         workspaceFolder: '/Shared/devops-ds'
       displayName: 'Deploy (copy) mount containers notebook to the Databricks cluster'
 
@@ -79,6 +79,6 @@ stages:
         azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         resourceGroupName: $(RESOURCE_GROUP)
         location: $(LOCATION)
-        csmFile: '$(Build.SourcesDirectory)/adf/arm-template/arm_template.json'
-        csmParametersFile: '$(Build.SourcesDirectory)/adf/arm-template/arm_template_parameters.json'
+        csmFile: '$(Build.SourcesDirectory)/dataops/adf/arm-template/arm_template.json'
+        csmParametersFile: '$(Build.SourcesDirectory)/dataops/adf/arm-template/arm_template_parameters.json'
         overrideParameters: -factoryName "$(DATA_FACTORY_NAME)"
