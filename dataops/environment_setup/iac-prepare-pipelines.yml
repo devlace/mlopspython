@@ -2,7 +2,7 @@ pr: none
 trigger: none
 
 variables:
-- group: devopsforai-aml-vg
+- group: lace-var-group-01
 - name: INPUT_CONTAINER_NAME
   value: 'inputdata'
 - name: TRAINING_CONTAINER_NAME
@@ -29,12 +29,12 @@ stages:
 
     - bash: |
         python -m pip install --upgrade pip 
-        python -m pip install -r $(Build.SourcesDirectory)/environment_setup/dbricks_requirements.txt
+        python -m pip install -r $(Build.SourcesDirectory)/dataops/environment_setup/dbricks_requirements.txt
       displayName: 'Install Packages'
 
     - bash: |
         #Create Azure Databricks cluster
-        DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/environment_setup/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
+        DATABRICKS_CLUSTER_ID=$(python3 $(Build.SourcesDirectory)/dataops/environment_setup/cluster_config/cluster_manager.py 2>&1 >/dev/null) 
         echo "##vso[task.setvariable variable=databricks_cluster_id]$DATABRICKS_CLUSTER_ID"  
       env:
         DATABRICKS_ACCESS_TOKEN: $(DATABRICKS_ACCESS_TOKEN)
@@ -49,7 +49,7 @@ stages:
 
     - task: deploynotebooks@0
       inputs:
-        notebooksFolderPath: '$(Build.SourcesDirectory)/adf/utils/notebooks'
+        notebooksFolderPath: '$(Build.SourcesDirectory)/dataops/adf/utils/notebooks'
         workspaceFolder: '/Shared/devops-ds'
       displayName: 'Deploy (copy) mount containers notebook to the Databricks cluster'
 
@@ -79,6 +79,6 @@ stages:
         azureSubscription: '$(AZURE_RM_SVC_CONNECTION)'
         resourceGroupName: $(RESOURCE_GROUP)
         location: $(LOCATION)
-        csmFile: '$(Build.SourcesDirectory)/adf/arm-template/arm_template.json'
-        csmParametersFile: '$(Build.SourcesDirectory)/adf/arm-template/arm_template_parameters.json'
+        csmFile: '$(Build.SourcesDirectory)/dataops/adf/arm-template/arm_template.json'
+        csmParametersFile: '$(Build.SourcesDirectory)/dataops/adf/arm-template/arm_template_parameters.json'
         overrideParameters: -factoryName "$(DATA_FACTORY_NAME)"
